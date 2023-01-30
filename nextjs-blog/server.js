@@ -3,13 +3,17 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 const express = require("express");
-const app = express();
+const app = express()
 const bcrypt = require("bcrypt");
 const flash = require("express-flash");
 const session = require("express-session");
 const initializePassport = require("./passport-config");
 const passport = require("passport");
 const methodOverride = require("method-override");
+const path = require("path")
+const ejs = require("ejs")
+const collection = require("./src/mongodb");
+const { getMaxListeners } = require("process");
 
 initializePassport(
   passport,
@@ -17,9 +21,10 @@ initializePassport(
   (id) => users.find((user) => user.id == id)
 );
 
-const users = [];
+//const users = [];
 
 app.set("view-engine", "ejs");
+app.use(express.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(
@@ -57,18 +62,20 @@ app.get("/register", checkNotAuthenticated, (req, res) => {
 });
 
 app.post("/register", checkNotAuthenticated, async (req, res) => {
-  try {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    users.push({
-      id: Date.now().toString(),
+  //try {
+    //const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const data = collection({
+      //id: Date.now().toString(),
       name: req.body.name,
       email: req.body.email,
-      password: hashedPassword,
+      password: req.body.password //hashedPassword,
     });
+    await collection.insertMany([{name: 'Marija', email: 'lal@gmail.com', password: 'allalal'}])
     res.redirect("/login");
-  } catch {
+ // } catch {
     res.redirect("/register");
-  }
+  //}
+  
 });
 
 app.delete("/logout", function (req, res, next) {
@@ -95,4 +102,6 @@ function checkNotAuthenticated(req, res, next) {
   next();
 }
 
-app.listen(3000);
+app.listen(3000, function(){
+  console.log("App is running on Port 3000");
+});
