@@ -49,6 +49,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(methodOverride("_method"));
 app.use("/styles", express.static(__dirname + "/styles"));
+app.use(express.static("public"));
 
 app.get("/", checkAuthenticated, (req, res) => {
   res.render("index.ejs", { name: req.user.name });
@@ -58,7 +59,7 @@ app.get("/login", checkNotAuthenticated, (req, res) => {
   res.render("login.ejs");
 });
 
-app.get("/", checkAuthenticated, (req, res) => {
+app.get("/predictor", checkAuthenticated, (req, res) => {
   res.render("predictor.ejs", { name: req.user.name });
 });
 
