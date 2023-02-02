@@ -1,4 +1,5 @@
-body {
+body 
+{
   font-family: Arial, Helvetica, sans-serif;
   font-size: 16px;
   margin: 0px;
@@ -7,15 +8,15 @@ body {
   color: black;
 }
 
-* {
+* 
+{
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-li,
-a,
-p {
+li, a, p, button 
+{
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   font-weight: 500;
   font-size: 16px;
@@ -23,24 +24,28 @@ p {
   text-decoration: none;
 }
 
-header {
+header 
+{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30px 3%;
+  padding: 30px 2%;
   background-color: #7b8f8a;
 }
 
-.nav_links {
+.nav_links 
+{
   list-style: none;
 }
 
-.nav_links li {
+.nav_links li 
+{
   display: inline-block;
-  padding: 0px 30px;
+  padding: 0px 10px;
 }
 
-.nav_links li a {
+.nav_links li a 
+{
   padding: 9px 25px;
   background-color: #506266;
   border: none;
@@ -49,20 +54,40 @@ header {
   transition: all 0.3s ease 0s;
 }
 
-.nav_links li a:hover {
+.nav_links li a:hover 
+{
   background-color: #f8e4ac;
   color: #506266;
 }
 
-.profile {
-  padding: 9px 5%;
+.profile 
+{
+  padding: 9px 25px;
   background-color: #506266;
   border: none;
   border-radius: 50px;
   transition: all 0.3s ease 0s;
 }
 
-#title {
+.logout button
+{
+  font-size: 16px;
+  padding: 9px 25px;
+  background-color: #506266;
+  border: none;
+  border-radius: 50px;
+  transition: all 0.3s ease 0s;
+  cursor: pointer;
+}
+
+.logout button:hover
+{
+  background-color: #f8e4ac;
+  color: #506266;
+}
+
+#title 
+{
   background-color: #bcc499;
   color: black;
   text-align: center;
@@ -70,7 +95,8 @@ header {
   margin-bottom: 20px;
 }
 
-.survey_container {
+.survey_container 
+{
   width: 80%;
   margin: auto;
   background-color: #bcc499;
@@ -78,16 +104,19 @@ header {
   padding: 15px;
 }
 
-#survey-form {
+.survey-form 
+{
   text-align: center;
 }
 
-.row-tab {
+.row-tab 
+{
   display: block;
   padding-bottom: 20px;
 }
 
-.label-tab {
+.label-tab 
+{
   display: inline-block;
   width: 44%;
   text-align: right;
@@ -95,27 +124,37 @@ header {
   margin-right: 15px;
 }
 
-.input-tab {
+.input-tab 
+{
   display: inline-block;
   width: 54%;
   text-align: left;
 }
 
-.select-tab {
+.text
+{
+  width: 35%;
+}
+
+.select-tab 
+{
   display: inline-block;
   width: 54%;
   text-align: left;
 }
 
-.radio_choice {
+.radio_choice 
+{
   margin-bottom: 5px;
 }
 
-#select-box {
+#select-box 
+{
   padding: 5px 0px;
 }
 
-.predict_btn button {
+button 
+{
   padding: 9px 25px;
   background-color: #506266;
   border: none;
@@ -125,7 +164,29 @@ header {
   font-size: 18px;
 }
 
-.predict_btn button:hover {
+button:hover 
+{
   background-color: #7b8f8a;
   color: #bcc499;
+}
+
+.results 
+{
+  width: 90vw;
+  max-width: 550px;
+  margin: 8vh auto;
+}
+.results__heading 
+{
+  
+    font-size: 110%;
+}
+  
+.results__display-wrapper 
+{
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #bcc499;
+    border: 1px solid #506266;
+    overflow-x: scroll;
 }
