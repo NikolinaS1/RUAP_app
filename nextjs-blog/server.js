@@ -191,8 +191,8 @@ app.post("/predictor",(req,res) => {
       module.exports = oblvl*/ 
     })
     .catch(error => console.log('error', error));
-   // res.redirect("/predictor");
-   res.render('predictor', {title: 'POST test'});
+    res.redirect("/predictor");
+   //res.render('predictor', {title: 'POST test'});
   }); 
 
 
