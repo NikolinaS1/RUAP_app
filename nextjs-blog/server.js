@@ -13,10 +13,11 @@ const passport = require("passport");
 const methodOverride = require("method-override");
 const path = require("path");
 const ejs = require("ejs");
-const collection = require("./src/mongodb");
+const collection = require("./models/User");
 const { getMaxListeners } = require("process");
 const { request } = require("http");
 const { response, json } = require("express");
+//const collectionPredictor = require("./src/mongodb");
 
 const getUserByEmail = async function (email) {
   return await collection.findOne({ email: email });
@@ -119,7 +120,18 @@ app.post("/predictor", (req, res) => {
     MTRANS: request.MTRANS || "value",
     NObeyesdad: "value",
   };
-  console.log(dataState);
+  //console.log(collectionPredictor.findOne({FACVyes: FACVyes})+1);
+  /*const id = "63dea4e5396d37c85572e698"
+  if (dataState.FAVC == "yes")
+  {
+    collectionPredictor.updateOne({_id:id}, {set:{FACVyes:collectionPredictor.findOne({ FAVCyes: FAVCyes })+1}});
+  }
+  else if (dataState.FAVC == "no")
+  {
+
+  }*/
+
+  //console.log(dataState);
 
   //API
   const fetch = require("node-fetch");
@@ -178,7 +190,7 @@ app.post("/predictor", (req, res) => {
     GlobalParameters: {},
   };
   var raw = JSON.stringify(NoJSONraw);
-  console.log(raw);
+  //console.log(raw);
 
   var requestOptions = {
     method: "POST",
@@ -193,29 +205,42 @@ app.post("/predictor", (req, res) => {
   )
     .then((response) => response.text())
     .then((result) => {
-      console.log(result);
-      //data = JSON.stringify(result);
-      // res.send(data);
+      //console.log(result);
+      var FCVCyes=0, FCVCno=0;
       var sp = result.split(",");
+      console.log(sp);
       sp[60] = sp[60].split('"');
       var temp = sp[60][1].split("_");
-      console.log(temp);
+      //console.log(temp);
       var oblvl = "";
       for (let i = 0; i < temp.length; i++) {
         oblvl += temp[i] + " ";
+        
       }
+      for (let j = 53; j <=59; j++)
+      {
+        sp[j] = sp[j].split('"');
+      }
+      var probUnder = (Number(sp[53][1])*100).toFixed(2);
+      var probNormal = (Number(sp[54][1])*100).toFixed(2);
+      var probOb1 = (Number(sp[55][1])*100).toFixed(2);
+      var probOb2 = (Number(sp[56][1])*100).toFixed(2);
+      var probOb3 = (Number(sp[57][1])*100).toFixed(2);
+      var probOver1 = (Number(sp[58][1])*100).toFixed(2);
+      var probOver2 = (Number(sp[59][1])*100).toFixed(2);
+      //console.log(Number(sp[53][1])*100);
       //console.log(sp[60][1]);
       res.write(
-        "<!DOCTYPE html>" +
-          "<html>" +
-          "   <head>" +
+        '<!DOCTYPE html>' +
+          '<html>' +
+          '   <head>' +
           '       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">' +
           '       <meta charset="utf-8" />' +
-          "       <title>Obesity predictor</title>" +
+          '       <title>Obesity predictor</title>' +
           '       <meta name="viewport" content="width=device-width, initial-scale=1" />' +
           '       <link rel="icon" href="./OP.png" />' +
-          "   </head>" +
-          "   <body>" +
+          '   </head>' +
+          '   <body>' +
           '       <nav class="navbar navbar-expand-sm bg-primary navbar-dark">' +
           '           <div class="container-fluid">' +
           '               <img class="logo" src="logo.png" width="190px"></img>' +
@@ -225,42 +250,43 @@ app.post("/predictor", (req, res) => {
           '                   <li class="nav-item">' +
           '                       <form action="/logout?_method=DELETE" method="POST" class="logout">' +
           '                           <button class="btn btn-primary" type="submit">Log Out</button>' +
-          "                       </form>" +
-          "                   </li>" +
-          "               </ul>" +
-          "           </div>" +
-          "       </nav>" +
+          '                       </form>' +
+          '                   </li>' +
+          '               </ul>' +
+          '           </div>' +
+          '       </nav>' +
           '       <div class="res">' +
           `           <h2 id="result" class="text-center mb-4 mt-4 text-secondary">Your obesity level is: ${oblvl}</h2>` +
-          "       </div>" +
+          '       </div>' +
           '      <div class="mt-5 table-responsive">' +
           '         <table class="table-bordered mx-auto w-auto">' +
-          "         <thead>" +
+          '         <caption style="text-align:center; caption-side:top;">Scored Probabilities for Classes</caption>'+
+          '         <thead>' +
           '             <tr class="text-secondary text-center" height="50">' +
-          '                 <th width="140">Underweight</th>' +
+          '                 <th width="140">Insufficient weight</th>' +
           '                 <th width="140">Normal weight</th>' +
-          '                 <th width="140">Overweight1</th>' +
-          '                 <th width="140">Overweight2</th>' +
-          '                 <th width="140">Obesity1</th>' +
-          '                 <th width="140">Obesity2</th>' +
-          '                 <th width="140">Obesity3</th>' +
-          "             </tr>" +
-          "         </thead>" +
-          "         <tbody>" +
+          '                 <th width="140">Overweight 1</th>' +
+          '                 <th width="140">Overweight 2</th>' +
+          '                 <th width="140">Obesity 1</th>' +
+          '                 <th width="140">Obesity 2</th>' +
+          '                 <th width="140">Obesity 3</th>' +
+          '             </tr>' +
+          '         </thead>' +
+          '         <tbody>' +
           '             <tr class="text-secondary text-center" height="50">' +
-          "                 <td>11%</td>" +
-          "                 <td></td>" +
-          "                 <td></td>" +
-          "                 <td></td>" +
-          "                 <td></td>" +
-          "                 <td></td>" +
-          "                 <td></td>" +
-          "             </tr>" +
-          "         </tbody>" +
-          "       </table>" +
-          "     </div>" +
-          "   </body>" +
-          "</html>"
+          `                 <td> ${probUnder}%</td>` +
+          `                 <td>${probNormal}%</td>` +
+          `                 <td>${probOver1}%</td>` +
+          `                 <td>${probOver2}%</td>` +
+          `                 <td>${probOb1}%</td>` +
+          `                 <td>${probOb2}%</td>` +
+          `                 <td>${probOb3}%</td>` +
+          '             </tr>' +
+          '         </tbody>' +
+          '       </table>' +
+          '     </div>' +
+          '   </body>' +
+          '</html>'
       );
       res.end();
     })
