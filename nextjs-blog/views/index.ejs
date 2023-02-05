@@ -9,6 +9,7 @@
     <div class="container-fluid">
         <img class="logo" src='logo.png' width="190px"></img>
         <ul class="navbar-nav">
+            <li class="nav-link">Welcome back, <%= name %>!</li>
             <li class="nav-item"><a class="nav-link active" href='/'>Home</a></li>
             <li class="nav-item"><a class ="nav-link" href='/predictor'>Predictor</a></li>
             <li class="nav-item">
@@ -21,195 +22,42 @@
 </nav>
       
 <div>
+    <script>
+        const graphValues = <%- JSON.stringify(graphValues) %>;
+        function renderGraph(ctx, graphID) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(graphValues[graphID]),
+                    datasets: [{
+                        label: '# of Votes',
+                        data: Object.values(graphValues[graphID]),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        };
+    </script>
     <h2 class="text-center mb-4 mt-4 text-secondary">Statistics</h2>
     <div class="container text-center">
         <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="ms-3 mb-3 mt-3">Graph1</h3>
+                        <h3 class="ms-3 mb-3 mt-3">Frequently eating caloric food</h3>
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph1"></canvas>
                         </div>
                         <script>
-                            favc = {}
-                            fcvc = {}
-                            ncp = {}
-                            caec = {}
-                            smoke = {}
-                            ch20 = {}
-                            scc = {}
-                            faf = {}
-                            tue = {}
-                            calc = {}
-                            mtrans = {}
-                            nobeyesdad = {}
-
-                            for (odgovor in predictorCollection.findAll()) {
-                                if (favc[odgovor.FAVC]) {
-                                        favc[odgovor.FAVC] += 1;
-                                } else {
-                                        favc[odgovor.FAVC] = 1;
-                                }
-                                if (fcvc[odgovor.FCVC]) {
-                                        fcvc[odgovor.FCVC] += 1;
-                                } else {
-                                        fcvc[odgovor.FCVC] = 1;
-                                }
-                                if (ncp[odgovor.NCP]) {
-                                        ncp[odgovor.NCP] += 1;
-                                } else {
-                                        ncp[odgovor.NCP] = 1;
-                                }
-                                if (caec[odgovor.CAEC]) {
-                                        caec[odgovor.CAEC] += 1;
-                                } else {
-                                        caec[odgovor.CAEC] = 1;
-                                }
-                                if (smoke[odgovor.SMOKE]) {
-                                    smoke[odgovor.SMOKE] += 1;
-                                } else {
-                                    smoke[odgovor.SMOKE] = 1;
-                                }
-
-                                if (ch20[odgovor.CH20]) {
-                                    ch20[odgovor.CH20] += 1;
-                                } else {
-                                    ch20[odgovor.CH20] = 1;
-                                }
-    
-                                if (scc[odgovor.SCC]) {
-                                    scc[odgovor.SCC] += 1;
-                                } else {
-                                    scc[odgovor.SCC] = 1;
-                                }
-  
-                                if (faf[odgovor.FAF]) {
-                                    faf[odgovor.FAF] += 1;
-                                } else {
-                                    faf[odgovor.FAF] = 1;
-                                }
-  
-                                if (tue[odgovor.TUE]) {
-                                    tue[odgovor.TUE] += 1;
-                                } else {
-                                    tue[odgovor.TUE] = 1;
-                                }
-
-                                if (calc[odgovor.CALC]) {
-                                    calc[odgovor.CALC] += 1;
-                                } else {
-                                    calc[odgovor.CALC] = 1;
-                                }
-        
-                                if (mtrans[odgovor.MTRANS]) {
-                                    mtrans[odgovor.MTRANS] += 1;
-                                } else {
-                                    mtrans[odgovor.MTRANS] = 1;
-                                }
-      
-                                if (nobeyesdad[odgovor.NObeyesdad]) {
-                                    nobeyesdad[odgovor.NObeyesdad] += 1;
-                                } else {
-                                    nobeyesdad[odgovor.NObeyesdad] = 1;
-                                }
-                            }
-                            // graf:
-                            labelsFavc = []
-                            labelsFavcData = []
-                            for (i in favc) {
-                                labelsFavc.append(i);
-                                labelsFavcData.append(favc[i]);
-                            }
-                            labelsFcvc = []
-                            labelsFcvcData = []
-                            for (i in fcvc) {
-                                labelsFcvc.append(i);
-                                labelsFcvcData.append(fcvc[i]);
-                            }
-                            labelsNcp = []
-                            labelsNcpData = []
-                            for (i in ncp) {
-                                labelsNcp.append(i);
-                                labelsNcpData.append(ncp[i]);
-                            }
-                            labelsCaec = []
-                            labelsCaecData = []
-                            for (i in caec) {
-                                labelsCaec.append(i);
-                                labelsCaecData.append(caec[i]);
-                            }
-                            labelsSmoke = []
-                            labelsSmokeData = []
-                            for (i in smoke) {
-                                labelsSmoke.append(i);
-                                labelsSmokeData.append(smoke[i]);
-                            }
-                            labelsCh2o = []
-                            labelsCh2oData = []
-                            for (i in ch2o) {
-                                labelsCh2o.append(i);
-                                labelsCh2oData.append(ch2o[i]);
-                            }
-                            labelsScc = []
-                            labelsSccData = []
-                            for (i in scc) {
-                                labelsScc.append(i);
-                                labelsSccData.append(scc[i]);
-                            }
-                            labelsFaf = []
-                            labelsFafData = []
-                            for (i in faf) {
-                                labelsFaf.append(i);
-                                labelsFafData.append(faf[i]);
-                            }
-                            labelsTue = []
-                            labelsTueData = []
-                            for (i in tue) {
-                                labelsTue.append(i);
-                                labelsTueData.append(tue[i]);
-                            }
-                            labelsCalc = []
-                            labelsCalcData = []
-                            for (i in calc) {
-                                labelsCalc.append(i);
-                                labelsCalcData.append(calc[i]);
-                            }
-                            labelsMtrans = []
-                            labelsMtransData = []
-                            for (i in mtrans) {
-                                labelsMtrans.append(i);
-                                labelsMtransData.append(mtrans[i]);
-                            }
-                            labelsNobeyesdad = []
-                            labelsNobeyesdadData = []
-                            for (i in nobeyesdad) {
-                                labelsNobeyesdad.append(i);
-                                labelsNobeyesdadData.append(nobeyesdad[i]);
-                            }
-
-                        </script>
-                        <script>
-                            
                             const ctx1 = document.getElementById('graph1');
-                            new Chart(ctx1, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsFavc,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsFavcData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            renderGraph(ctx1, 'FAVC');
                       </script>
                   </div>
               </div>
@@ -218,31 +66,14 @@
           <div class="col">
               <div class="card">
                   <div class="card-body">
-                      <h3 class="ms-3 mb-3 mt-3">Graph2</h3>
+                      <h3 class="ms-3 mb-3 mt-3">Eating vegetables</h3>
                       <div style="width:500px; margin:0 auto;">
                           <canvas id="graph2"></canvas>
                       </div>
 
                       <script>
                           const ctx2 = document.getElementById('graph2');
-                          new Chart(ctx2, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsFcvc,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsFcvcData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                          renderGraph(ctx2, 'FCVC');
                       </script>
                   </div>
               </div>
@@ -255,31 +86,14 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="ms-3 mb-3 mt-3">Graph3</h3>
+                        <h3 class="ms-3 mb-3 mt-3">Daily meals</h3>
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph3"></canvas>
                         </div>
                         
                         <script>
                             const ctx3 = document.getElementById('graph3');
-                            new Chart(ctx3, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsNcp,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsNcpData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            renderGraph(ctx3, 'NCP');
                       </script>
                   </div>
               </div>
@@ -288,31 +102,14 @@
           <div class="col">
               <div class="card">
                   <div class="card-body">
-                      <h3 class="ms-3 mb-3 mt-3">Graph4</h3>
+                      <h3 class="ms-3 mb-3 mt-3">Eating food between meals</h3>
                       <div style="width:500px; margin:0 auto;">
                           <canvas id="graph4"></canvas>
                       </div>
 
                       <script>
                           const ctx4 = document.getElementById('graph4');
-                          new Chart(ctx4, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsCaec,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsCaecData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                          renderGraph(ctx4, 'CAEC');
                       </script>
                   </div>
               </div>
@@ -325,31 +122,14 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="ms-3 mb-3 mt-3">Graph5</h3>
+                        <h3 class="ms-3 mb-3 mt-3">Smoking</h3>
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph5"></canvas>
                         </div>
                         
                         <script>
-                            const ctx5 = document.getElementById('graph5');
-                            new Chart(ctx5, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsSmoke,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsSmokeData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                          const ctx5 = document.getElementById('graph5');
+                          renderGraph(ctx5, 'SMOKE');
                       </script>
                   </div>
               </div>
@@ -358,31 +138,14 @@
           <div class="col">
               <div class="card">
                   <div class="card-body">
-                      <h3 class="ms-3 mb-3 mt-3">Graph6</h3>
+                      <h3 class="ms-3 mb-3 mt-3">Daily water consumption</h3>
                       <div style="width:500px; margin:0 auto;">
                           <canvas id="graph6"></canvas>
                       </div>
 
                       <script>
                           const ctx6 = document.getElementById('graph6');
-                          new Chart(ctx6, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsCh2o,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsCh2oData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                          renderGraph(ctx6, 'CH20');
                       </script>
                   </div>
               </div>
@@ -395,31 +158,14 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="ms-3 mb-3 mt-3">Graph7</h3>
+                        <h3 class="ms-3 mb-3 mt-3">Daily calories monitoring</h3>
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph7"></canvas>
                         </div>
                         
                         <script>
                             const ctx7 = document.getElementById('graph7');
-                            new Chart(ctx7, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsScc,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsSccData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            renderGraph(ctx7, 'SCC');
                       </script>
                   </div>
               </div>
@@ -428,31 +174,14 @@
           <div class="col">
               <div class="card">
                   <div class="card-body">
-                      <h3 class="ms-3 mb-3 mt-3">Graph8</h3>
+                      <h3 class="ms-3 mb-3 mt-3">Physical activity</h3>
                       <div style="width:500px; margin:0 auto;">
                           <canvas id="graph8"></canvas>
                       </div>
 
                       <script>
                           const ctx8 = document.getElementById('graph8');
-                          new Chart(ctx8, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsFaf,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsFafData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            renderGraph(ctx8, 'FAF');
                       </script>
                   </div>
               </div>
@@ -465,31 +194,14 @@
             <div class="col">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="ms-3 mb-3 mt-3">Graph9</h3>
+                        <h3 class="ms-3 mb-3 mt-3">Usage of technological devices</h3>
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph9"></canvas>
                         </div>
                         
                         <script>
                             const ctx9 = document.getElementById('graph9');
-                            new Chart(ctx9, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsTue,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsTue,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            renderGraph(ctx9, 'TUE');
                       </script>
                   </div>
               </div>
@@ -498,103 +210,53 @@
           <div class="col">
               <div class="card">
                   <div class="card-body">
-                      <h3 class="ms-3 mb-3 mt-3">Graph10</h3>
+                      <h3 class="ms-3 mb-3 mt-3">Alchocol consumprion</h3>
                       <div style="width:500px; margin:0 auto;">
                           <canvas id="graph10"></canvas>
                       </div>
 
                       <script>
-                          const ctx10 = document.getElementById('graph10');
-                          new Chart(ctx10, {
-                              type: 'bar',
-                              data: {
-                                  labels: labelsCalc,
-                                  datasets: [{
-                                      label: '# of Votes',
-                                      data: labelsCalcData,
-                                      borderWidth: 1
-                                  }]
-                              },
-                              options: {
-                                  scales: {
-                                      y: {
-                                          beginAtZero: true
-                                      }
-                                  }
-                              }
-                          });
+                            const ctx10 = document.getElementById('graph10');
+                            renderGraph(ctx10, 'CALC');
                       </script>
                   </div>
               </div>
           </div>
       </div>
 </div>
+<div class="container text-center mt-4">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="ms-3 mb-3 mt-3">Transportation</h3>
+                    <div style="width:500px; margin:0 auto;">
+                        <canvas id="graph11"></canvas>
+                    </div>
+                    
+                    <script>
+                        const ctx11 = document.getElementById('graph11');
+                        renderGraph(ctx11, 'MTRANS');
+                  </script>
+              </div>
+          </div>
+      </div>
 
-<div class="container text-center mt-4 mb-4">
-    <div class="col">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="ms-3 mb-3 mt-3">Graph11</h3>
-                <div style="width:500px; margin:0 auto;">
-                    <canvas id="graph11"></canvas>
-                </div>
-                        
-                <script>
-                    const ctx11 = document.getElementById('graph11');
-                    new Chart(ctx11, {
-                        type: 'bar',
-                        data: {
-                            labels: labelsMtrans,
-                            datasets: [{
-                                label: '# of Votes',
-                                data: labelsMtransData,
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                              y: {
-                                  beginAtZero: true
-                              }
-                            }
-                        }
-                    });
+      <div class="col">
+          <div class="card">
+              <div class="card-body">
+                  <h3 class="ms-3 mb-3 mt-3">Estimated obesity level</h3>
+                  <div style="width:500px; margin:0 auto;">
+                      <canvas id="graph12"></canvas>
+                  </div>
+
+                  <script>
+                        const ctx12 = document.getElementById('graph12');
+                        renderGraph(ctx12, 'NObeyesdad');
                   </script>
+              </div>
           </div>
       </div>
-  </div>  
+  </div>
 </div>
-<div class="container text-center mt-4 mb-4">
-    <div class="col">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="ms-3 mb-3 mt-3">Graph11</h3>
-                <div style="width:500px; margin:0 auto;">
-                    <canvas id="graph11"></canvas>
-                </div>
-                        
-                <script>
-                    const ctx12 = document.getElementById('graph12');
-                    new Chart(ctx11, {
-                        type: 'bar',
-                        data: {
-                            labels: labelsNobeyesdad,
-                            datasets: [{
-                                label: '# of Votes',
-                                data: labelsNobeyesdadData,
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                              y: {
-                                  beginAtZero: true
-                              }
-                            }
-                        }
-                    });
-                  </script>
-          </div>
-      </div>
-  </div>  
-</div>
+

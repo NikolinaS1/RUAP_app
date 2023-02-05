@@ -6,6 +6,7 @@ var http = require("http");
 const express = require("express");
 const app = express();
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 const flash = require("express-flash");
 const session = require("express-session");
 const initializePassport = require("./passport-config");
@@ -14,28 +15,18 @@ const methodOverride = require("method-override");
 const path = require("path");
 const ejs = require("ejs");
 const connect = require("./src/mongodb.js");
-const collection = require("./models/User");
-const predictorCollection = require("./models/Predictor");
-const { getMaxListeners } = require("process");
+const userModel = require("./models/User");
+const predictorModel = require("./models/Predictor");
 const { request } = require("http");
 const { response, json } = require("express");
-const collectionPredictor = require("./src/mongodb");
 
 const getUserByEmail = async function (email) {
-  return await collection.findOne({ email: email });
-};
-
-const getUserById = async function (id) {
-  return await collection.findOne({ id: id });
+  return await userModel.findOne({ email: email });
 };
 
 initializePassport(
   passport,
   getUserByEmail,
-  getUserById
-  // function () {}
-  // (email) => users.find((user) => user.email == email),
-  // (id) => users.find((user) => user.id == id)
 );
 
 //const users = [];
@@ -57,8 +48,127 @@ app.use(methodOverride("_method"));
 app.use("/styles", express.static(__dirname + "/styles"));
 app.use(express.static("public"));
 
-app.get("/", checkAuthenticated, (req, res) => {
-  res.render("index.ejs", { name: req.user.name });
+app.get("/", checkAuthenticated, async (req, res) => {
+  let graphValues = {
+    'FAVC': {
+      'no': 0,
+      'yes': 0
+    },
+    'FCVC': {
+      'Never': 0,
+      'Sometimes': 0,
+      'Always': 0
+    },
+    'NCP': {
+      'Between 1 and 2': 0,
+      'Three': 0,
+      'More than three': 0
+    },
+    'CAEC': {
+      'no': 0,
+      'Sometimes': 0,
+      'Frequently': 0,
+      'Always': 0
+    },
+    'SMOKE': {
+      'yes': 0,
+      'no': 0
+    },
+    'CH20': {
+      'Less than a liter': 0,
+      'Between 1 and 2L': 0,
+      'More than 2L': 0
+    },
+    'SCC': {
+      'yes': 0,
+      'no': 0
+    },
+    'FAF': {
+      'I do not have': 0,
+      '1 or 2 days': 0,
+      '2 to 3 days': 0,
+      '4 or 5 days': 0
+    },
+    'TUE': {
+      '0-2 hours': 0,
+      '3-5 hours': 0,
+      'more than 5 hours': 0
+    },
+    'CALC': {
+      'I do not drink': 0,
+      'Sometimes': 0,
+      'Frequently': 0,
+      'Always': 0
+    },
+    'MTRANS': {
+      'Automobile': 0,
+      'Motorbike': 0,
+      'Bike': 0,
+      'Public transporation': 0,
+      'Walking': 0
+    },
+    'NObeyesdad': {
+      'Insufficient Weight': 0,
+      'Normal Weight': 0,
+      'Overweight Level I': 0,
+      'Overweight Level II': 0,
+      'Obesity Type I': 0,
+      'Obesity Type II': 0,
+      'Obesity Type III': 0,
+    },
+  };
+
+  let graphValuesMapping = {
+    'FCVC': {
+      '1': 'Never',
+      '2': 'Sometimes',
+      3: 'Always',
+    },
+    'NCP': {
+      '1': 'Between 1 and 2',
+      '3': 'Three',
+      '4': 'More than three',
+    },
+    'CH20': {
+      '1': 'Less than a liter',
+      '2': 'Between 1 and 2L',
+      '3': 'More than 2L',
+    },
+    'FAF': {
+      '0': 'I do not have',
+      '1': '1 or 2 days',
+      '2': '2 to 3 days',
+      '3': '4 or 5 days'
+    },
+    'TUE': {
+      '0': '0-2 hours',
+      '1': '3-5 hours',
+      '2': 'more than 5 hours',
+    },
+    'CALC': {
+      'no': 'I do not drink',
+    },
+    'MTRANS': {
+      'Public_Transportation': 'Public transporation',
+    },
+  };
+
+  for await (const predictor of predictorModel.find()) {
+    for (let [key, value] of Object.entries(predictor.toObject())) {
+      if (graphValues[key] == undefined) {
+        continue
+      }
+      if (graphValuesMapping[key] && graphValuesMapping[key][value] != undefined) {
+        value = graphValuesMapping[key][value]
+      }
+
+      if (graphValues[key][value] == undefined) {
+        continue;
+      }
+      graphValues[key][value]++;
+    }
+  }
+  res.render("index.ejs", { name: req.user.name, graphValues });
 });
 
 app.get("/login", checkNotAuthenticated, (req, res) => {
@@ -86,20 +196,19 @@ app.post(
 app.post("/register", checkNotAuthenticated, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const data = collection({
-      id: Date.now().toString(),
+    const data = userModel({
       name: req.body.name,
       email: req.body.email,
       password: hashedPassword,
     });
-    await collection.insertMany(data);
+    await data.save()
     res.redirect("/login");
   } catch {
     res.redirect("/register");
   }
 });
 
-app.post("/predictor", (req, res) => {
+app.post("/predictor", checkAuthenticated, (req, res) => {
   const request = req.body;
 
   const dataState = {
@@ -122,7 +231,7 @@ app.post("/predictor", (req, res) => {
     MTRANS: request.MTRANS || "value",
     NObeyesdad: "value",
   };
-   
+
   //console.log(dataState);
   //API
   const fetch = require("node-fetch");
@@ -195,109 +304,51 @@ app.post("/predictor", (req, res) => {
     requestOptions
   )
     .then((response) => response.text())
-    .then((result) => {
-      //console.log(result);
-      //var FCVCyes=0, FCVCno=0;
+    .then(async (result) => {
       var sp = result.split(",");
-      //console.log(sp);
       sp[60] = sp[60].split('"');
       var temp = sp[60][1].split("_");
-      //console.log(temp);
       var oblvl = "";
       for (let i = 0; i < temp.length; i++) {
         oblvl += temp[i] + " ";
       }
+      oblvl = oblvl.trim()
       for (let j = 53; j <= 59; j++) {
         sp[j] = sp[j].split('"');
       }
-      var probUnder = (Number(sp[53][1]) * 100).toFixed(2);
-      var probNormal = (Number(sp[54][1]) * 100).toFixed(2);
-      var probOb1 = (Number(sp[55][1]) * 100).toFixed(2);
-      var probOb2 = (Number(sp[56][1]) * 100).toFixed(2);
-      var probOb3 = (Number(sp[57][1]) * 100).toFixed(2);
-      var probOver1 = (Number(sp[58][1]) * 100).toFixed(2);
-      var probOver2 = (Number(sp[59][1]) * 100).toFixed(2);
 
-      const id =1 ;
-      const predictedData = collection({
-        User: id,
-        FAVC: dataState.FAVC,
-        FCVC: dataState.FCVC,
-        NCP: dataState.NCP,
-        CAEC: dataState.CAEC,
-        SMOKE: dataState.SMOKE,
-        CH20: dataState.CH2O,
-        SCC: dataState.SCC,
-        FAF: dataState.FAF,
-        TUE: dataState.TUE,
-        CALC: dataState.CALC,
-        MTRANS: dataState.MTRANS,
-        NObeyesdad: oblvl,
-      })
-      predictorCollection.insertMany(predictedData);
+      let predictorData = await predictorModel.findOne({ User: req.user });
+      if (!predictorData) {
+        predictorData = predictorModel({
+          User: req.user,
+        });
+      }
+      predictorData.FAF = dataState.FAF;
+      predictorData.FAVC = dataState.FAVC;
+      predictorData.FCVC = dataState.FCVC;
+      predictorData.NCP = dataState.NCP;
+      predictorData.CAEC = dataState.CAEC;
+      predictorData.SMOKE = dataState.SMOKE;
+      predictorData.CH20 = dataState.CH2O;
+      predictorData.SCC = dataState.SCC;
+      predictorData.FAF = dataState.FAF;
+      predictorData.TUE = dataState.TUE;
+      predictorData.CALC = dataState.CALC;
+      predictorData.MTRANS = dataState.MTRANS;
+      predictorData.NObeyesdad = oblvl;
 
+      await predictorData.save();
 
-      //console.log(Number(sp[53][1])*100);
-      //console.log(sp[60][1]);
-      res.write(
-        "<!DOCTYPE html>" +
-          "<html>" +
-          "   <head>" +
-          '       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">' +
-          '       <meta charset="utf-8" />' +
-          "       <title>Obesity predictor</title>" +
-          '       <meta name="viewport" content="width=device-width, initial-scale=1" />' +
-          '       <link rel="icon" href="./OP.png" />' +
-          "   </head>" +
-          "   <body>" +
-          '       <nav class="navbar navbar-expand-sm bg-primary navbar-dark">' +
-          '           <div class="container-fluid">' +
-          '               <img class="logo" src="logo.png" width="190px"></img>' +
-          '               <ul class="navbar-nav">' +
-          '                   <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>' +
-          '                   <li class="nav-item"><a class ="nav-link" href="/predictor">Predictor</a></li>' +
-          '                   <li class="nav-item">' +
-          '                       <form action="/logout?_method=DELETE" method="POST" class="logout">' +
-          '                           <button class="btn btn-primary" type="submit">Log Out</button>' +
-          "                       </form>" +
-          "                   </li>" +
-          "               </ul>" +
-          "           </div>" +
-          "       </nav>" +
-          '       <div class="res">' +
-          `           <h2 id="result" class="text-center mb-4 mt-4 text-secondary">Your obesity level is: ${oblvl}</h2>` +
-          "       </div>" +
-          '      <div class="mt-5 table-responsive">' +
-          '         <table class="table-bordered mx-auto w-auto">' +
-          '         <caption style="text-align:center; caption-side:top;">Scored Probabilities for Classes</caption>' +
-          "         <thead>" +
-          '             <tr class="text-secondary text-center" height="50">' +
-          '                 <th width="140">Insufficient weight</th>' +
-          '                 <th width="140">Normal weight</th>' +
-          '                 <th width="140">Overweight 1</th>' +
-          '                 <th width="140">Overweight 2</th>' +
-          '                 <th width="140">Obesity 1</th>' +
-          '                 <th width="140">Obesity 2</th>' +
-          '                 <th width="140">Obesity 3</th>' +
-          "             </tr>" +
-          "         </thead>" +
-          "         <tbody>" +
-          '             <tr class="text-secondary text-center" height="50">' +
-          `                 <td> ${probUnder}%</td>` +
-          `                 <td>${probNormal}%</td>` +
-          `                 <td>${probOver1}%</td>` +
-          `                 <td>${probOver2}%</td>` +
-          `                 <td>${probOb1}%</td>` +
-          `                 <td>${probOb2}%</td>` +
-          `                 <td>${probOb3}%</td>` +
-          "             </tr>" +
-          "         </tbody>" +
-          "       </table>" +
-          "     </div>" +
-          "   </body>" +
-          "</html>"
-      );
-      res.end();
+      res.render("predictor_results.ejs", {
+        oblvl: oblvl,
+        probUnder: (Number(sp[53][1]) * 100).toFixed(2),
+        probNormal: (Number(sp[54][1]) * 100).toFixed(2),
+        probOb1: (Number(sp[55][1]) * 100).toFixed(2),
+        probOb2: (Number(sp[56][1]) * 100).toFixed(2),
+        probOb3: (Number(sp[57][1]) * 100).toFixed(2),
+        probOver1: (Number(sp[58][1]) * 100).toFixed(2),
+        probOver2: (Number(sp[59][1]) * 100).toFixed(2),
+      });
     })
     .catch((error) => console.log("error", error));
   //res.redirect("/predictor");
