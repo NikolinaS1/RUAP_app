@@ -1,7 +1,22 @@
 const mongoose = require("mongoose");
 
 const predictorSchema = new mongoose.Schema({
-  User: { type: mongoose.Types.ObjectId, ref: "RUAPCollection" },
+  
+    User: { type: mongoose.Types.ObjectId, ref: "RUAPCollection" },
+    FAVC: { type: String },
+    FCVC: { type: String },
+    NCP: { type: String },
+    CAEC: { type: String },
+    SMOKE: { type: String },
+    CH20: { type: String },
+    SCC: { type: String },
+    FAF: { type: String },
+    TUE: { type: String },
+    CALC: { type: String },
+    MTRANS: { type: String },
+    NObeyesdad: { type: String },
+  
+  /*User: { type: mongoose.Types.ObjectId, ref: "RUAPCollection" },
   FAVCyes: { type: Number },
   FAVCno: { type: Number },
   FCVCNever: { type: Number },
@@ -43,7 +58,7 @@ const predictorSchema = new mongoose.Schema({
   NObeyesdadOverweightLevel2: { type: Number },
   NObeyesdadObesityType1: { type: Number },
   NObeyesdadObesityType2: { type: Number },
-  NObeyesdadObesityType3: { type: Number },
+  NObeyesdadObesityType3: { type: Number },*/
 });
 
 module.exports = mongoose.model("Predictor", predictorSchema);

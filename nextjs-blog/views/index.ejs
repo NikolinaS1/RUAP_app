@@ -31,16 +31,174 @@
                         <div style="width:500px; margin:0 auto;">
                             <canvas id="graph1"></canvas>
                         </div>
-                        
                         <script>
+                            favc = {}
+                            fcvc = {}
+                            ncp = {}
+                            caec = {}
+                            smoke = {}
+                            ch20 = {}
+                            scc = {}
+                            faf = {}
+                            tue = {}
+                            calc = {}
+                            mtrans = {}
+                            nobeyesdad = {}
+
+                            for (odgovor in predictorCollection.findAll()) {
+                                if (favc[odgovor.FAVC]) {
+                                        favc[odgovor.FAVC] += 1;
+                                } else {
+                                        favc[odgovor.FAVC] = 1;
+                                }
+                                if (fcvc[odgovor.FCVC]) {
+                                        fcvc[odgovor.FCVC] += 1;
+                                } else {
+                                        fcvc[odgovor.FCVC] = 1;
+                                }
+                                if (ncp[odgovor.NCP]) {
+                                        ncp[odgovor.NCP] += 1;
+                                } else {
+                                        ncp[odgovor.NCP] = 1;
+                                }
+                                if (caec[odgovor.CAEC]) {
+                                        caec[odgovor.CAEC] += 1;
+                                } else {
+                                        caec[odgovor.CAEC] = 1;
+                                }
+                                if (smoke[odgovor.SMOKE]) {
+                                    smoke[odgovor.SMOKE] += 1;
+                                } else {
+                                    smoke[odgovor.SMOKE] = 1;
+                                }
+
+                                if (ch20[odgovor.CH20]) {
+                                    ch20[odgovor.CH20] += 1;
+                                } else {
+                                    ch20[odgovor.CH20] = 1;
+                                }
+    
+                                if (scc[odgovor.SCC]) {
+                                    scc[odgovor.SCC] += 1;
+                                } else {
+                                    scc[odgovor.SCC] = 1;
+                                }
+  
+                                if (faf[odgovor.FAF]) {
+                                    faf[odgovor.FAF] += 1;
+                                } else {
+                                    faf[odgovor.FAF] = 1;
+                                }
+  
+                                if (tue[odgovor.TUE]) {
+                                    tue[odgovor.TUE] += 1;
+                                } else {
+                                    tue[odgovor.TUE] = 1;
+                                }
+
+                                if (calc[odgovor.CALC]) {
+                                    calc[odgovor.CALC] += 1;
+                                } else {
+                                    calc[odgovor.CALC] = 1;
+                                }
+        
+                                if (mtrans[odgovor.MTRANS]) {
+                                    mtrans[odgovor.MTRANS] += 1;
+                                } else {
+                                    mtrans[odgovor.MTRANS] = 1;
+                                }
+      
+                                if (nobeyesdad[odgovor.NObeyesdad]) {
+                                    nobeyesdad[odgovor.NObeyesdad] += 1;
+                                } else {
+                                    nobeyesdad[odgovor.NObeyesdad] = 1;
+                                }
+                            }
+                            // graf:
+                            labelsFavc = []
+                            labelsFavcData = []
+                            for (i in favc) {
+                                labelsFavc.append(i);
+                                labelsFavcData.append(favc[i]);
+                            }
+                            labelsFcvc = []
+                            labelsFcvcData = []
+                            for (i in fcvc) {
+                                labelsFcvc.append(i);
+                                labelsFcvcData.append(fcvc[i]);
+                            }
+                            labelsNcp = []
+                            labelsNcpData = []
+                            for (i in ncp) {
+                                labelsNcp.append(i);
+                                labelsNcpData.append(ncp[i]);
+                            }
+                            labelsCaec = []
+                            labelsCaecData = []
+                            for (i in caec) {
+                                labelsCaec.append(i);
+                                labelsCaecData.append(caec[i]);
+                            }
+                            labelsSmoke = []
+                            labelsSmokeData = []
+                            for (i in smoke) {
+                                labelsSmoke.append(i);
+                                labelsSmokeData.append(smoke[i]);
+                            }
+                            labelsCh2o = []
+                            labelsCh2oData = []
+                            for (i in ch2o) {
+                                labelsCh2o.append(i);
+                                labelsCh2oData.append(ch2o[i]);
+                            }
+                            labelsScc = []
+                            labelsSccData = []
+                            for (i in scc) {
+                                labelsScc.append(i);
+                                labelsSccData.append(scc[i]);
+                            }
+                            labelsFaf = []
+                            labelsFafData = []
+                            for (i in faf) {
+                                labelsFaf.append(i);
+                                labelsFafData.append(faf[i]);
+                            }
+                            labelsTue = []
+                            labelsTueData = []
+                            for (i in tue) {
+                                labelsTue.append(i);
+                                labelsTueData.append(tue[i]);
+                            }
+                            labelsCalc = []
+                            labelsCalcData = []
+                            for (i in calc) {
+                                labelsCalc.append(i);
+                                labelsCalcData.append(calc[i]);
+                            }
+                            labelsMtrans = []
+                            labelsMtransData = []
+                            for (i in mtrans) {
+                                labelsMtrans.append(i);
+                                labelsMtransData.append(mtrans[i]);
+                            }
+                            labelsNobeyesdad = []
+                            labelsNobeyesdadData = []
+                            for (i in nobeyesdad) {
+                                labelsNobeyesdad.append(i);
+                                labelsNobeyesdadData.append(nobeyesdad[i]);
+                            }
+
+                        </script>
+                        <script>
+                            
                             const ctx1 = document.getElementById('graph1');
                             new Chart(ctx1, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsFavc,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsFavcData,
                                       borderWidth: 1
                                   }]
                               },
@@ -70,10 +228,10 @@
                           new Chart(ctx2, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsFcvc,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsFcvcData,
                                       borderWidth: 1
                                   }]
                               },
@@ -107,10 +265,10 @@
                             new Chart(ctx3, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsNcp,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsNcpData,
                                       borderWidth: 1
                                   }]
                               },
@@ -140,10 +298,10 @@
                           new Chart(ctx4, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsCaec,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsCaecData,
                                       borderWidth: 1
                                   }]
                               },
@@ -177,10 +335,10 @@
                             new Chart(ctx5, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsSmoke,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsSmokeData,
                                       borderWidth: 1
                                   }]
                               },
@@ -210,10 +368,10 @@
                           new Chart(ctx6, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsCh2o,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsCh2oData,
                                       borderWidth: 1
                                   }]
                               },
@@ -247,10 +405,10 @@
                             new Chart(ctx7, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsScc,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsSccData,
                                       borderWidth: 1
                                   }]
                               },
@@ -280,10 +438,10 @@
                           new Chart(ctx8, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsFaf,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsFafData,
                                       borderWidth: 1
                                   }]
                               },
@@ -317,10 +475,10 @@
                             new Chart(ctx9, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsTue,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsTue,
                                       borderWidth: 1
                                   }]
                               },
@@ -350,10 +508,10 @@
                           new Chart(ctx10, {
                               type: 'bar',
                               data: {
-                                  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                                  labels: labelsCalc,
                                   datasets: [{
                                       label: '# of Votes',
-                                      data: [12, 19, 3, 5, 2, 3],
+                                      data: labelsCalcData,
                                       borderWidth: 1
                                   }]
                               },
@@ -386,10 +544,44 @@
                     new Chart(ctx11, {
                         type: 'bar',
                         data: {
-                            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                            labels: labelsMtrans,
                             datasets: [{
                                 label: '# of Votes',
-                                data: [12, 19, 3, 5, 2, 3],
+                                data: labelsMtransData,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                              y: {
+                                  beginAtZero: true
+                              }
+                            }
+                        }
+                    });
+                  </script>
+          </div>
+      </div>
+  </div>  
+</div>
+<div class="container text-center mt-4 mb-4">
+    <div class="col">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="ms-3 mb-3 mt-3">Graph11</h3>
+                <div style="width:500px; margin:0 auto;">
+                    <canvas id="graph11"></canvas>
+                </div>
+                        
+                <script>
+                    const ctx12 = document.getElementById('graph12');
+                    new Chart(ctx11, {
+                        type: 'bar',
+                        data: {
+                            labels: labelsNobeyesdad,
+                            datasets: [{
+                                label: '# of Votes',
+                                data: labelsNobeyesdadData,
                                 borderWidth: 1
                             }]
                         },

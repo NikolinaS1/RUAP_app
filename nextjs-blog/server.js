@@ -19,7 +19,7 @@ const predictorCollection = require("./models/Predictor");
 const { getMaxListeners } = require("process");
 const { request } = require("http");
 const { response, json } = require("express");
-//const collectionPredictor = require("./src/mongodb");
+const collectionPredictor = require("./src/mongodb");
 
 const getUserByEmail = async function (email) {
   return await collection.findOne({ email: email });
@@ -122,18 +122,7 @@ app.post("/predictor", (req, res) => {
     MTRANS: request.MTRANS || "value",
     NObeyesdad: "value",
   };
-
-  //console.log(collectionPredictor.findOne({FACVyes: FACVyes})+1);
-  /*const id = "63dea4e5396d37c85572e698"
-  if (dataState.FAVC == "yes")
-  {
-    collectionPredictor.updateOne({_id:id}, {set:{FACVyes:collectionPredictor.findOne({ FAVCyes: FAVCyes })+1}});
-  }
-  else if (dataState.FAVC == "no")
-  {
-
-  }*/
-
+   
   //console.log(dataState);
   //API
   const fetch = require("node-fetch");
@@ -228,6 +217,26 @@ app.post("/predictor", (req, res) => {
       var probOb3 = (Number(sp[57][1]) * 100).toFixed(2);
       var probOver1 = (Number(sp[58][1]) * 100).toFixed(2);
       var probOver2 = (Number(sp[59][1]) * 100).toFixed(2);
+
+      const id =1 ;
+      const predictedData = collection({
+        User: id,
+        FAVC: dataState.FAVC,
+        FCVC: dataState.FCVC,
+        NCP: dataState.NCP,
+        CAEC: dataState.CAEC,
+        SMOKE: dataState.SMOKE,
+        CH20: dataState.CH2O,
+        SCC: dataState.SCC,
+        FAF: dataState.FAF,
+        TUE: dataState.TUE,
+        CALC: dataState.CALC,
+        MTRANS: dataState.MTRANS,
+        NObeyesdad: oblvl,
+      })
+      predictorCollection.insertMany(predictedData);
+
+
       //console.log(Number(sp[53][1])*100);
       //console.log(sp[60][1]);
       res.write(
